@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>服务器线程信息</title>
+</head>
+<body>
+    <h3>服务器所有线程信息(${threadNum!})</h3>
+    <pre>
+        <%
+            for (var stackTrace in threadStacks) {
+                var thread = @stackTrace.getKey();
+                if (@currentThread.getName() == (@thread.getName())) {
+                    print("\n当前线程：" + @thread.getName() + "\n");
+                    print("\t无需打印当前线程的堆栈信息\t\n");
+                    continue;
+                }
+                print("<br/>线程：" + @thread.getName() + "\n");
+                var stack = @stackTrace.getValue();
+                for (var element in stack) {
+                    print("\t" + element + "\t\n");
+                }
+            }
+        %>
+    </pre>
+</body>
+</html>
