@@ -1,8 +1,14 @@
 package com.zhang.yong.quit.programminglearning.modules.admin.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
 import com.zhang.yong.quit.programminglearning.modules.admin.AdminBaseController;
+import com.zhang.yong.quit.programminglearning.modules.admin.entity.QzMenu;
+import com.zhang.yong.quit.programminglearning.modules.admin.service.QzMenuService;
+import com.zhang.yong.quit.programminglearning.modules.admin.service.QzUserService;
+import com.zhang.yong.quit.programminglearning.modules.qz.entity.QzQuiz;
+import com.zhang.yong.quit.programminglearning.modules.qz.service.QzQuizService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -47,6 +53,15 @@ public class AdminController implements AdminBaseController {
     @Autowired
     private Producer producer;
 
+    @Autowired
+    private QzUserService qzUserService;
+
+    @Autowired
+    private QzMenuService qzMenuService;
+
+    @Autowired
+    private QzQuizService qzQuizService;
+
     @GetMapping("index")
     public void index() {
 
@@ -58,8 +73,11 @@ public class AdminController implements AdminBaseController {
     }
 
     @RequestMapping("login")
-    public String login() {
-        return prefix + "/login.html";
+    public void login(Model model) {
+        log.info(JSON.toJSONString(qzMenuService.getById(1L)));
+//        log.info(JSON.toJSONString(qzQuizService.getAll()));
+        QzQuiz qzQuiz = qzQuizService.getById(1L);
+        log.info(JSON.toJSONString(qzQuiz));
     }
 
     @PostMapping(value="login")

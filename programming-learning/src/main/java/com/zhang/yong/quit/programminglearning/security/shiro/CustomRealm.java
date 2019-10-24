@@ -1,6 +1,6 @@
 package com.zhang.yong.quit.programminglearning.security.shiro;
 
-import com.zhang.yong.quit.programminglearning.modules.admin.dao.User;
+import com.zhang.yong.quit.programminglearning.modules.admin.bean.UserBean;
 import com.zhang.yong.quit.programminglearning.utils.SecurityUtil;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -10,10 +10,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
-import java.util.Collections;
 
 /**
  * @author zhang yong
@@ -47,7 +44,7 @@ public class CustomRealm extends AuthorizingRealm {
         if (principals == null) {
             throw new AuthorizationException("PrincipalCollection method argument cannot be null.");
         }
-        User user = (User) getAvailablePrincipal(principals);
+        UserBean userBean = (UserBean) getAvailablePrincipal(principals);
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 //        System.out.println("获取角色信息："+user.getRoles());
 //        System.out.println("获取权限信息："+user.getPermissions());
@@ -69,8 +66,8 @@ public class CustomRealm extends AuthorizingRealm {
             throw new AccountException("Null usernames are not allowed by this realm.");
         }
         // 暂时用远程登录逻辑替代本地登录逻辑，后期做用户中心的时候，需要改为本地登录。
-        User user = new User(); //remoteService.login(username,password);
+        UserBean userBean = new UserBean(); //remoteService.login(username,password);
 //        userService.setRolesAndMenusForUser(user);
-        return new SimpleAuthenticationInfo(user, SecurityUtil.getPassword(password,null), getName());
+        return new SimpleAuthenticationInfo(userBean, SecurityUtil.getPassword(password,null), getName());
     }
 }

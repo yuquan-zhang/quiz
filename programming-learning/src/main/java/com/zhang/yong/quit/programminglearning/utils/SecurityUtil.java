@@ -1,6 +1,6 @@
 package com.zhang.yong.quit.programminglearning.utils;
 
-import com.zhang.yong.quit.programminglearning.modules.admin.dao.User;
+import com.zhang.yong.quit.programminglearning.modules.admin.bean.UserBean;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
@@ -8,8 +8,8 @@ import org.apache.shiro.crypto.hash.Sha256Hash;
 
 public class SecurityUtil {
 
-    public static User getCurrentUser(){
-        return (User)SecurityUtils.getSubject().getPrincipal();
+    public static UserBean getCurrentUser(){
+        return (UserBean)SecurityUtils.getSubject().getPrincipal();
     }
 
     public static String getSalt() {

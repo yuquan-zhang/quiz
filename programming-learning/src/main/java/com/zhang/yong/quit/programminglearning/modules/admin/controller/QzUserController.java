@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
  **/
 @Controller
 @RequestMapping(AdminBaseController.prefix + "/user")
-public class UserController implements AdminBaseController {
+public class QzUserController implements AdminBaseController {
 
 }
