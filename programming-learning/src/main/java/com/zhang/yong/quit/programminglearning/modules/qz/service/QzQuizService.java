@@ -21,6 +21,6 @@ public class QzQuizService {
     }
 
     public QzQuiz getById(Long id) {
-        return qzQuizDao.findById(id).get();
+        return qzQuizDao.findById(id).orElse(null);
     }
 }

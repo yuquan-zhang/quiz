@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author zhangyong created on 2019/10/24
@@ -21,6 +22,11 @@ public class QzMenuService {
     }
 
     public QzMenu getById(Long id) {
-        return qzMenuDao.findById(id).get();
+        return qzMenuDao.findById(id).orElse(null);
     }
+
+    public Set<QzMenu> getByUserId(Long userId) {
+        return qzMenuDao.findByUserId(userId);
+    }
+
 }

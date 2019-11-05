@@ -1,11 +1,45 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>Spring Security Example</title>
+    <div th:replace="/common/common-css-js :: head"></div>
+    <title>首页</title>
 </head>
 <body>
-<h1>Welcome!</h1>
+<div id="tabs" class="w3-bar w3-black">
+    <a href="javascript:onTabClick(0,'/admin/home')" class="w3-bar-item w3-button w3-mobile w3-green">首页</a>
+    <a href="javascript:onTabClick(1,'/qz/quiz/test')" class="w3-bar-item w3-button w3-mobile">测验</a>
+    <a href="javascript:onTabClick(2,'/qz/quiz/myTest')" class="w3-bar-item w3-button w3-mobile">我的测验</a>
+    <a href="javascript:onTabClick(3,'/qz/quiz/testHistory')" class="w3-bar-item w3-button w3-mobile">测验历史</a>
+    <a href="javascript:onTabClick(4,'/qz/quiz/notExist')" class="w3-bar-item w3-button w3-mobile">Link 4</a>
+    <a href="#" class="w3-bar-item w3-button w3-mobile">Link 5</a>
+    <a href="#" class="w3-bar-item w3-button w3-mobile">Link 6</a>
+    <a href="#" class="w3-bar-item w3-button w3-mobile w3-right">登出</a>
+    <span class="w3-bar-item w3-mobile w3-right" th:text="${null == currentUser ? '游客' : currentUser.name}">章勇</span>
+</div>
+<iframe id="content" style="width: 100%;height: 1000px" class="w3-border-0 w3-border-bottom w3-row" src="/admin/home" onload="onResize()"></iframe>
+<div th:replace="/common/common-css-js :: copy"></div>
+<script>
+    function onResize() {
+        $("#content").css({height: (app.windowHeight() - 65) + "px"})
+    }
 
-<p>Click <a th:href="@{/admin/hello}">here</a> to see a greeting.</p>
+    window.onresize = function () {
+        onResize();
+    }
+
+    function onTabClick(tab,url) {
+        var tabs = $("#tabs > a");
+        if (!isNaN(tab)) {
+            for (var i = 0, len = tabs.length; i < len; ++i) {
+                if (tab === i) {
+                    $(tabs[i]).addClass("w3-green");
+                } else {
+                    $(tabs[i]).removeClass("w3-green");
+                }
+            }
+        }
+        $("#content").attr("src",url);
+    }
+</script>
 </body>
 </html>

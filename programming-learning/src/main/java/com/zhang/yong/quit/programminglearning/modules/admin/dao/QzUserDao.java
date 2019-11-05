@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface QzUserDao extends JpaRepository<QzUser,Long> {
 
+    QzUser findQzUserByAccount(String account);
 }

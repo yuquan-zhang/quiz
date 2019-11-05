@@ -1,6 +1,8 @@
 package com.zhang.yong.quit.programminglearning.security.shiro;
 
 import com.zhang.yong.quit.programminglearning.modules.admin.bean.UserBean;
+import com.zhang.yong.quit.programminglearning.modules.admin.entity.QzUser;
+import com.zhang.yong.quit.programminglearning.modules.admin.service.QzUserService;
 import com.zhang.yong.quit.programminglearning.utils.SecurityUtil;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -10,6 +12,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
@@ -21,12 +24,9 @@ public class CustomRealm extends AuthorizingRealm {
 
     @Value("${my.app.admin.username}")
     private String admin;
-//
-//    @Autowired
-//    private RemoteService remoteService;
-//
-//    @Autowired
-//    private UserService userService;
+
+    @Autowired
+    private QzUserService qzUserService;
 
 
     //告诉shiro如何根据获取到的用户信息中的密码和盐值来校验密码
@@ -61,13 +61,16 @@ public class CustomRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         UsernamePasswordToken uToken = (UsernamePasswordToken) token;
         String username = uToken.getUsername();
-        String password = new String(uToken.getPassword());
         if (username == null) {
             throw new AccountException("Null usernames are not allowed by this realm.");
         }
+        QzUser qzUser = qzUserService.getByAccount(username);
+        if (null == qzUser) throw new UnknownAccountException(username);
         // 暂时用远程登录逻辑替代本地登录逻辑，后期做用户中心的时候，需要改为本地登录。
-        UserBean userBean = new UserBean(); //remoteService.login(username,password);
-//        userService.setRolesAndMenusForUser(user);
-        return new SimpleAuthenticationInfo(userBean, SecurityUtil.getPassword(password,null), getName());
+        UserBean userBean = new UserBean();
+        userBean.setId(qzUser.getId());
+        userBean.setAccount(qzUser.getAccount());
+        userBean.setName(qzUser.getName());
+        return new SimpleAuthenticationInfo(userBean, qzUser.getPassword(), getName());
     }
 }

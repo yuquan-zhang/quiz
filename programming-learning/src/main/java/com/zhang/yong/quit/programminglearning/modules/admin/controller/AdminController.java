@@ -1,14 +1,9 @@
 package com.zhang.yong.quit.programminglearning.modules.admin.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
 import com.zhang.yong.quit.programminglearning.modules.admin.AdminBaseController;
-import com.zhang.yong.quit.programminglearning.modules.admin.entity.QzMenu;
-import com.zhang.yong.quit.programminglearning.modules.admin.service.QzMenuService;
-import com.zhang.yong.quit.programminglearning.modules.admin.service.QzUserService;
-import com.zhang.yong.quit.programminglearning.modules.qz.entity.QzQuiz;
-import com.zhang.yong.quit.programminglearning.modules.qz.service.QzQuizService;
+import com.zhang.yong.quit.programminglearning.utils.SecurityUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -53,31 +48,18 @@ public class AdminController implements AdminBaseController {
     @Autowired
     private Producer producer;
 
-    @Autowired
-    private QzUserService qzUserService;
-
-    @Autowired
-    private QzMenuService qzMenuService;
-
-    @Autowired
-    private QzQuizService qzQuizService;
-
     @GetMapping("index")
-    public void index() {
-
+    public void index(Model model) {
+        model.addAttribute("currentUser",SecurityUtil.getCurrentUser());
     }
 
-    @GetMapping("hello")
-    public void hello(Model model) {
+    @GetMapping("home")
+    public void home(Model model) {
         model.addAttribute("message","欢迎来到我的世界");
     }
 
     @RequestMapping("login")
-    public void login(Model model) {
-        log.info(JSON.toJSONString(qzMenuService.getById(1L)));
-//        log.info(JSON.toJSONString(qzQuizService.getAll()));
-        QzQuiz qzQuiz = qzQuizService.getById(1L);
-        log.info(JSON.toJSONString(qzQuiz));
+    public void login() {
     }
 
     @PostMapping(value="login")
