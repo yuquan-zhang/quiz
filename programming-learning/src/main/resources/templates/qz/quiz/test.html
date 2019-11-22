@@ -5,9 +5,166 @@
     <title>测验</title>
 </head>
 <body>
-我在这里
-<script>
+<div>
+    <div id="app" v-cloak>
 
+        <!-- Page Container -->
+        <div class="w3-margin-top">
+
+            <!-- The Grid -->
+            <div class="w3-row-padding">
+
+                <!-- Left Column -->
+                <div class="w3-quarter">
+
+                    <ul class="w3-ul w3-card-4">
+                        <li  v-for="(item, index) in tests" class="w3-bar w3-hover-blue-gray"
+                             :class="{'w3-blue' : currentTestIndex == index}" @click="changeActive(index)">
+                            <img src="/img/quiz.png" class="w3-bar-item w3-circle w3-hide-small" style="width:85px">
+                            <div class="w3-bar-item">
+                                <span class="w3-large">{{item.name}}</span><br>
+                                <span>{{new Date(item.createTime).Format('yyyy-MM-dd hh:mm:ss')}}</span>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- End Left Column -->
+                </div>
+
+                <!-- Right Column -->
+                <div class="w3-threequarter">
+                    <form id="command" @submit.prevent="onSubmit" v-if="!hasSubmit">
+                        <div v-if="currentTest"  class="w3-container w3-white">
+                            <h3 class="w3-center">《{{currentTest.name}}》请完成以下题目：</h3>
+                            <div v-for="(question, qInd) in currentTest.questions" class="w3-container w3-card w3-white w3-margin-bottom">
+                                <h2 class="w3-text-grey"><i class="fa fa-circle fa-fw w3-margin-right w3-text-teal"></i>{{question.name}}</h2>
+                                <div class="w3-container">
+                                    <template v-if="question.type == 'RADIO'">
+                                        <block v-for="(option, oInd) in question.options">
+                                            <p><input :id="option.id" class="w3-radio" type="radio" :name="question.id" :value="option.name" required>
+                                            <label :for="option.id">{{option.name}}、{{option.description}}</label></p>
+                                        </block>
+                                    </template>
+                                    <template v-else-if="question.type == 'CHECKBOX'">
+                                        <block v-for="(option, oInd) in question.options">
+                                            <p><input :id="option.id" class="w3-check" type="checkbox" :name="question.id" :value="option.name">
+                                                <label :for="option.id">{{option.name}}、{{option.description}}</label></p>
+                                        </block>
+                                    </template>
+                                </div>
+                            </div>
+                            <button v-if="currentTest.questions && currentTest.questions.length > 0" class="w3-button w3-blue">提交</button>
+                        </div>
+                    </form>
+                    <div v-if="hasSubmit" class="w3-container w3-white">
+                        <h3>《{{currentTest.name}}》得分（正确题目数/总题目数）：{{scoreQuestion}}/{{totalQuestion}}</h3>
+                        <div v-for="(question, qInd) in answerQuestions" class="w3-container w3-card w3-white w3-margin-bottom">
+                            <h2 class="w3-text-grey"><i class="fa fa-circle fa-fw w3-margin-right w3-text-teal"></i>{{question.name}}</h2>
+                            <h3>你的答案：{{question.answer}}，正确答案：{{question.correctResult}}</h3>
+                        </div>
+                        <button class="w3-button w3-blue" @click="saveAnswer">保存</button>
+                    </div>
+                </div>
+
+                <!-- End Grid -->
+            </div>
+
+            <!-- End Page Container -->
+        </div>
+        <br/>
+    </div>
+</div>
+<script>
+    var vm = new Vue({
+        el:"#app",
+        data:{
+            tests: [],
+            currentTest: null,
+            currentTestIndex: -1,
+            totalQuestion: 0,
+            scoreQuestion: 0,
+            hasSubmit: false,
+            answerQuestions: []
+        },
+        created() {
+            var _this = this;
+            app.postJson({
+                url:"/qz/quiz/tests",
+                data:{},
+                success: function (data) {
+                    if (data.success) {
+                        _this.tests = data.data || [];
+                        if (_this.tests.length > 0) {
+                            _this.currentTest = _this.tests[0];
+                            _this.currentTestIndex = 0;
+                        }
+                    }
+                }
+            })
+        },
+        methods: {
+            changeActive(index) {
+                if (this.hasSubmit && this.currentTestIndex !== index) {
+                    layer.alert("当前测试结果未保存到数据库，切换测试试卷会导致当前测试结果丢失，请先保存测试结果再切换测试试卷");
+                    return;
+                }
+                this.currentTestIndex = index;
+                this.currentTest = this.tests[index];
+            },
+            onSubmit() {
+                var answers = $("#command").uiSerializeForm();
+                var questions = this.currentTest && this.currentTest.questions || [];
+                var scored = 0;
+                var answerQuestions = questions.map(function (item) {
+                    var isCorrect = answers[item.id] && answers[item.id] === item.correctResult;
+                    if (isCorrect) scored++;
+                    item.answer = answers[item.id] || '';
+                    return item;
+                })
+                this.scoreQuestion = scored;
+                this.totalQuestion = questions.length;
+                this.hasSubmit = true;
+                this.answerQuestions = answerQuestions;
+                console.log(answers);
+            },
+            saveAnswer() {
+                var updata = {};
+                updata.quiz = {
+                    id: this.currentTest && this.currentTest.id || ''
+                };
+                updata.userQuestions = this.answerQuestions.map(function (item) {
+                    var uq = {};
+                    uq.question = {id: item.id};
+                    uq.answer = item.answer || '';
+                    return uq;
+                });
+                updata.score = this.scoreQuestion + "/" + this.totalQuestion;
+                var saveSuccess = false;
+                app.postJson({
+                    async: false,
+                    url:"/qz/quiz/saveAnswer",
+                    data:updata,
+                    success: function (data) {
+                        if (data.success) {
+                            saveSuccess = true;
+                        } else {
+                            layer.alert(data.message,{icon:1});
+                        }
+                    }
+                })
+                if (!saveSuccess) return;
+                this.hasSubmit = false;
+                this.tests.splice(this.currentTestIndex, this.currentTestIndex+1);
+                if (this.tests.length > 0) {
+                    this.currentTest = this.tests[0];
+                    this.currentTestIndex = 0;
+                } else {
+                    this.currentTest = null;
+                    this.currentTestIndex = -1;
+                }
+            }
+        }
+    });
 </script>
 </body>
 </html>

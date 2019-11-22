@@ -1,5 +1,6 @@
 package com.zhang.yong.quit.programminglearning.modules.qz.entity;
 
+import com.zhang.yong.quit.programminglearning.modules.common.dao.TableNames;
 import com.zhang.yong.quit.programminglearning.modules.common.entity.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "qz_question")
+@Table(name = TableNames.QZ_QUESTION)
 public class QzQuestion extends BaseEntity {
     @Column(name = "quiz_id")
     private Long quizId;

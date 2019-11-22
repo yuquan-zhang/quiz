@@ -1,5 +1,6 @@
 package com.zhang.yong.quit.programminglearning.modules.admin.entity;
 
+import com.zhang.yong.quit.programminglearning.modules.common.dao.TableNames;
 import com.zhang.yong.quit.programminglearning.modules.common.entity.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Table(name = "qz_menu")
+@Table(name = TableNames.QZ_ROLE)
 public class QzRole extends BaseEntity {
     private String name;
 }

@@ -49,8 +49,8 @@ public class AdminController implements AdminBaseController {
     private Producer producer;
 
     @GetMapping("index")
-    public void index(Model model) {
-        model.addAttribute("currentUser",SecurityUtil.getCurrentUser());
+    public void index(HttpSession session) {
+
     }
 
     @GetMapping("home")
@@ -92,6 +92,7 @@ public class AdminController implements AdminBaseController {
                     Subject currentUser = SecurityUtils.getSubject();
                     UsernamePasswordToken token = new UsernamePasswordToken(username,password);
                     currentUser.login(token);
+                    session.setAttribute("currentUser",SecurityUtil.getCurrentUser());
                     if("true".equalsIgnoreCase(isSingleSession)) {
                         ServletContext servletContext  = session.getServletContext();
                         if(servletContext.getAttribute(username) != null) {

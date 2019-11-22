@@ -1,5 +1,6 @@
 package com.zhang.yong.quit.programminglearning.modules.qz.entity;
 
+import com.zhang.yong.quit.programminglearning.modules.common.dao.TableNames;
 import com.zhang.yong.quit.programminglearning.modules.common.entity.IdEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Table(name = "qz_option")
+@Table(name = TableNames.QZ_OPTION)
 public class QzOption extends IdEntity {
     @Column(name = "question_id")
     private Long questionId;

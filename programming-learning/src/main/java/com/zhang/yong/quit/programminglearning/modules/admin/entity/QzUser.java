@@ -1,5 +1,6 @@
 package com.zhang.yong.quit.programminglearning.modules.admin.entity;
 
+import com.zhang.yong.quit.programminglearning.modules.common.dao.TableNames;
 import com.zhang.yong.quit.programminglearning.modules.common.entity.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Table(name = "qz_user")
+@Table(name = TableNames.QZ_USER)
 public class QzUser extends BaseEntity {
     private String name;
     private String account;
