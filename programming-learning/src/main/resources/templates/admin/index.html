@@ -6,7 +6,7 @@
 </head>
 <body>
 <div id="tabs" class="w3-bar w3-black">
-    <a href="javascript:onTabClick(0,'/admin/home')" class="w3-bar-item w3-button w3-mobile w3-green">首页</a>
+    <a href="javascript:onTabClick(0,'/admin/home')" class="w3-bar-item w3-button w3-mobile w3-blue">首页</a>
     <a href="javascript:onTabClick(1,'/qz/quiz/test')" class="w3-bar-item w3-button w3-mobile">测验</a>
     <a href="javascript:onTabClick(2,'/qz/quiz/myTest')" class="w3-bar-item w3-button w3-mobile">我的测验</a>
     <a href="javascript:onTabClick(3,'/qz/quiz/testHistory')" class="w3-bar-item w3-button w3-mobile">测验历史</a>
@@ -32,9 +32,9 @@
         if (!isNaN(tab)) {
             for (var i = 0, len = tabs.length; i < len; ++i) {
                 if (tab === i) {
-                    $(tabs[i]).addClass("w3-green");
+                    $(tabs[i]).addClass("w3-blue");
                 } else {
-                    $(tabs[i]).removeClass("w3-green");
+                    $(tabs[i]).removeClass("w3-blue");
                 }
             }
         }
